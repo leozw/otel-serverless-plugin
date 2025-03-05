@@ -1,6 +1,6 @@
 {
-  "name": "otel-serveless-plugin",
-  "version": "1.0.0",
+  "name": "otel-serverless-plugin",
+  "version": "1.0.7",
   "description": "Serverless Framework plugin to add OpenTelemetry layers and environment variables automatically.",
   "main": "index.js",
   "scripts": {

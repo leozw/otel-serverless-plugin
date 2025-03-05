@@ -1,6 +1,6 @@
-# **otel-serveless-plugin**
+# **otel-serverless-plugin**
 
-The **`otel-serveless-plugin`** is a plugin for the **Serverless Framework** that automates the configuration of layers and environment variables required to instrument AWS Lambda functions with OpenTelemetry. It is designed to be flexible and highly configurable, allowing different clients and environments to be easily managed.
+The **`otel-serverless-plugin`** is a plugin for the **Serverless Framework** that automates the configuration of layers and environment variables required to instrument AWS Lambda functions with OpenTelemetry. It is designed to be flexible and highly configurable, allowing different clients and environments to be easily managed.
 
 ---
 
@@ -21,7 +21,7 @@ The **`otel-serveless-plugin`** is a plugin for the **Serverless Framework** tha
    Install the plugin via npm:
 
    ```bash
-   npm install --save-dev otel-serveless-plugin
+   npm install --save-dev otel-serverless-plugin
    ```
 
 2. **Configure your `serverless.yml`**
@@ -30,7 +30,7 @@ The **`otel-serveless-plugin`** is a plugin for the **Serverless Framework** tha
 
    ```yaml
    plugins:
-     - otel-serveless-plugin
+     - otel-serverless-plugin
    ```
 
 ---
@@ -61,7 +61,7 @@ Here's a complete example of how to use the plugin in your `serverless.yml`:
 service: otel-service
 
 plugins:
-  - otel-serveless-plugin
+  - otel-serverless-plugin
 
 custom:
   otelLayerPlugin:
@@ -162,7 +162,7 @@ The plugin will use default values defined in the code:
 - `region`: `"us-east-1"`
 - `layer`:
   - `arn:aws:lambda:${region}:184161586896:layer:opentelemetry-nodejs-0_11_0:1`
-  - `arn:aws:lambda:${region}:204595508824:layer:collector-logs-js:14`
+  - `arn:aws:lambda:${region}:204595508824:layer:collector-logs-js:17`
 
 ### 2. **Can I use this plugin with runtimes other than `nodejs`?**
 
@@ -173,7 +173,7 @@ Yes, as long as the layers are compatible with the runtime used.
 If you're using npm, simply update the version:
 
 ```bash
-npm install --save-dev otel-serveless-plugin@latest
+npm install --save-dev otel-serverless-plugin@latest
 ```
 
 ---

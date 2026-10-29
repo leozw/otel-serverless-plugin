@@ -4,11 +4,11 @@
   "description": "Serverless Framework plugin to add OpenTelemetry layers and environment variables automatically.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node --test test/*.test.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/leozw/otel-serveless-plugin.git"
+    "url": "git+https://github.com/leozw/otel-serverless-plugin.git"
   },
   "keywords": [
     "serverless\"",
@@ -19,7 +19,8 @@
   "author": "Leonardo Zwirtes",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/leozw/otel-serveless-plugin/issues"
+    "url": "https://github.com/leozw/otel-serverless-plugin/issues"
   },
-  "homepage": "https://github.com/leozw/otel-serveless-plugin#readme"
+  "homepage": "https://github.com/leozw/otel-serverless-plugin#readme",
+  "private": true
 }

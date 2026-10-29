@@ -7,53 +7,46 @@ class OtelLayerPlugin {
   }
 
   applyOtelLayer() {
-    const serviceName = this.serverless.service.getServiceName();
-    const stage = this.serverless.service.provider.stage || "dev";
-    const functions = this.serverless.service.functions;
-
-    const pluginConfig = this.serverless.service.custom?.otelLayerPlugin || {};
-    const tenant = pluginConfig.tenant || "default-tenant";
-    const token = pluginConfig.token || "";
-    const endpoint = pluginConfig.endpoint || "http://otel-endpoint:4318/";
-    const region = pluginConfig.region || "us-east-1";
-    const loki_url = pluginConfig.loki_url || "https://loki.elvenobservability.com/loki/api/v1/push";
-
-    const otelLayers = pluginConfig.layers || [
-      `arn:aws:lambda:${region}:184161586896:layer:opentelemetry-nodejs-0_12_0:1`,
-      `arn:aws:lambda:${region}:204595508824:layer:collector-logs-js:159`,
-    ];
-
-    Object.keys(functions).forEach((func) => {
-      const functionName = `${serviceName}_${stage}_${func}`;
-
-      const environmentVariables = {
-        AWS_LAMBDA_EXEC_WRAPPER: "/opt/otel-handler",
+    const service = this.serverless.service;
+    const provider = service.provider || {};
+    const config = service.custom?.otelLayerPlugin || {};
+    const log = message => this.serverless.cli?.log?.(message);
+    log('otel-serverless-plugin is a legacy alias. Migrate to elven-serverless-plugin after reviewing its configuration.');
+    if (config.enabled === false || provider.name !== 'aws') return;
+    // Historical public ARNs are not a runtime/region/architecture compatibility contract.
+    if (!Array.isArray(config.layers) || !config.layers.length || !config.layers.every(layer => typeof layer === 'string' && layer.length > 0)) {
+      log('Legacy instrumentation unchanged: explicit, validated otelLayerPlugin.layers required.');
+      return;
+    }
+    const isMap = value => value && typeof value === 'object' && !Array.isArray(value) && !Object.keys(value).some(key => key === 'Ref' || key.startsWith('Fn::'));
+    if (provider.environment !== undefined && !isMap(provider.environment)) return;
+    if (provider.layers !== undefined && !Array.isArray(provider.layers)) return;
+    const serviceName = service.getServiceName();
+    const stage = provider.stage || 'dev';
+    for (const [name, fn] of Object.entries(service.functions || {})) {
+      const runtime = fn.runtime || provider.runtime;
+      if (fn.otel === false || fn.image || typeof runtime !== 'string' || !/^nodejs\d+\.x$/.test(runtime)) continue;
+      if (fn.environment !== undefined && !isMap(fn.environment)) continue;
+      if (fn.layers !== undefined && !Array.isArray(fn.layers)) continue;
+      const functionName = `${serviceName}_${stage}_${name}`;
+      const defaults = {
         OTEL_SERVICE_NAME: functionName,
-        OTEL_TRACES_SAMPLER: "always_on",
-        OTEL_LAMBDA_TRACE_MODE: "capture",
-        OTEL_PROPAGATORS: "tracecontext,baggage,xray",
-        OTEL_RESOURCE_ATTRIBUTES: `service.name=${functionName},environment=${stage}`,
-        OTEL_EXPORTER_OTLP_ENDPOINT: endpoint,
-        TENANT_ID: tenant,
-        SERVICE_NAME: functionName,
-        RESOURCES_ATTRIBUTES: `service=${functionName},environment=${stage}`,
-        NODE_OPTIONS: "--require /opt/nodejs/index.js",
-        API_TOKEN: token,
-        LOKI_URL: loki_url
+        OTEL_RESOURCE_ATTRIBUTES: `service.name=${functionName},deployment.environment.name=${stage}`,
       };
-
-      if (!functions[func].layers) {
-        functions[func].layers = [];
-      }
-      functions[func].layers.push(...otelLayers);
-
-      if (!functions[func].environment) {
-        functions[func].environment = {};
-      }
-      Object.assign(functions[func].environment, environmentVariables);
-
-      this.serverless.cli.log(`Configuring function: ${functionName}`);
-    });
+      const mappings = { endpoint: 'OTEL_EXPORTER_OTLP_ENDPOINT', tenant: 'TENANT_ID', token: 'API_TOKEN', loki_url: 'LOKI_URL', execWrapper: 'AWS_LAMBDA_EXEC_WRAPPER' };
+      for (const [key, env] of Object.entries(mappings)) if (config[key] !== undefined) defaults[env] = config[key];
+      const environment = { ...(fn.environment || {}) };
+      const inherited = provider.environment || {};
+      for (const [key, value] of Object.entries(defaults)) if (!Object.prototype.hasOwnProperty.call(environment, key) && !Object.prototype.hasOwnProperty.call(inherited, key)) environment[key] = value;
+      // Serverless function-level layers replace provider layers, so retain both explicitly.
+      const layers = [...(provider.layers || []), ...(fn.layers || []), ...config.layers];
+      const seen = new Set();
+      const merged = layers.filter(layer => { const key = JSON.stringify(layer); if (seen.has(key)) return false; seen.add(key); return true; });
+      if (merged.length > 5) { log(`Legacy instrumentation unchanged for ${name}: AWS five-layer limit exceeded.`); continue; }
+      fn.layers = merged;
+      fn.environment = environment;
+      log(`Configured legacy instrumentation for ${name}; layer compatibility remains operator-owned.`);
+    }
   }
 }
 

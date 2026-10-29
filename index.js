@@ -9,7 +9,8 @@ class OtelLayerPlugin {
   applyOtelLayer() {
     const serviceName = this.serverless.service.getServiceName();
     const stage = this.serverless.service.provider.stage || "dev";
-    const functions = this.serverless.service.functions;
+    const functions = this.serverless.service.functions || {};
+    const providerEnvironment = this.serverless.service.provider.environment || {};
 
     const pluginConfig = this.serverless.service.custom?.otelLayerPlugin || {};
     const tenant = pluginConfig.tenant || "default-tenant";
@@ -45,12 +46,17 @@ class OtelLayerPlugin {
       if (!functions[func].layers) {
         functions[func].layers = [];
       }
-      functions[func].layers.push(...otelLayers);
+      functions[func].layers = [...new Set([...functions[func].layers, ...otelLayers])];
 
       if (!functions[func].environment) {
         functions[func].environment = {};
       }
-      Object.assign(functions[func].environment, environmentVariables);
+      // Function overrides win over provider values; plugin defaults only fill missing keys.
+      for (const [key, value] of Object.entries(environmentVariables)) {
+        if (!(key in functions[func].environment) && !(key in providerEnvironment)) {
+          functions[func].environment[key] = value;
+        }
+      }
 
       this.serverless.cli.log(`Configuring function: ${functionName}`);
     });

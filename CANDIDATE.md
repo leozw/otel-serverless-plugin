@@ -1,6 +1,6 @@
 # Isolated Release Candidate: NOT Drop-In
 
-The independent review rejected treating the previous rewrite as a compatible patch. All pre-existing tracked paths are restored byte-for-byte to the immutable baseline recorded in `candidate/legacy-baseline.json`. Their old APIs, ESM/Winston behavior, zips, package identity/version and executable paths are unchanged. **Their demonstrated defects/advisories are NOT fixed for existing users. Do not release/repoint those old paths or ARNs as this candidate.**
+This document describes the isolated private base PR, not the current public-source maintenance work in maintenance/README.md. At that private checkpoint all historical paths were unchanged. This maintenance branch intentionally fixes the existing otel-serverless-plugin API under its own identity; it does not substitute the private adapter or modify canonical elven-serverless-plugin. No old ARN is repointed or endorsed. Existing users receive no change until a reviewed release.
 
 Hardened code exists only under `candidate/`. Its private identity is `@elven-observability/serverless-config-adapter-candidate@0.0.0-rc.20261029.1`. This is a local artifact identity, not a published npm name or a stable major-version decision. Parent decides a new public identity/version, migration and release after review. No merge/publish/deploy is authorized.
 

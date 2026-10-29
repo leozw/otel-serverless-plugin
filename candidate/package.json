@@ -1,0 +1,29 @@
+{
+  "name": "@elven-observability/serverless-config-adapter-candidate",
+  "version": "0.0.0-rc.20261029.1",
+  "description": "Serverless Framework plugin to add OpenTelemetry layers and environment variables automatically.",
+  "main": "index.js",
+  "files": ["index.js"],
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "release-candidate": "node scripts/release.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/leozw/otel-serverless-plugin.git"
+  },
+  "keywords": [
+    "serverless\"",
+    "\"opentelemetry\"",
+    "\"plugin\"",
+    "\"aws-lambda"
+  ],
+  "author": "Leonardo Zwirtes",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/leozw/otel-serverless-plugin/issues"
+  },
+  "homepage": "https://github.com/leozw/otel-serverless-plugin#readme",
+  "private": true,
+  "engines": { "node": "^22.15.0 || ^24.0.0" }
+}

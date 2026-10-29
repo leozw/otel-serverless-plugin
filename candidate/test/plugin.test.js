@@ -41,8 +41,8 @@ test('non-Node, unresolved, custom runtime, container, opt-out, and unsupported 
 
 test('legacy package name and version stay distinct from canonical package', () => {
   const pkg = require('../package.json');
-  assert.equal(pkg.name, 'otel-serverless-plugin');
-  assert.equal(pkg.version, '1.0.7');
+  assert.equal(pkg.name, '@elven-observability/serverless-config-adapter-candidate');
+  assert.equal(pkg.version, '0.0.0-rc.20261029.1');
   assert.equal(pkg.private, true);
 });
 

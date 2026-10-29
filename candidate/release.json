@@ -1,0 +1,19 @@
+{
+  "identity": "@elven-observability/serverless-config-adapter-candidate",
+  "version": "0.0.0-rc.20261029.1",
+  "packageDir": ".",
+  "buildScript": null,
+  "layerZip": null,
+  "dropIn": false,
+  "publishAllowed": false,
+  "legacyGuarantee": "IMMUTABLE_NOT_FIXED",
+  "runtimeTargets": [
+    "nodejs22.x",
+    "nodejs24.x"
+  ],
+  "knownIncompatibilities": [
+    "Historical automatic layer ARNs, default endpoint/tenant/token, always-on sampler and NODE_OPTIONS/preload/exec-wrapper defaults are not reproduced.",
+    "Explicit validated layers/execWrapper and runtime selection are required. Unsupported/unresolved runtimes and opt-outs are skipped; five-layer count is enforced.",
+    "This private configuration adapter is not the old otel-serverless-plugin package and not the parent-owned canonical elven-serverless-plugin. No old alias registry deprecation, replacement or pin update is performed."
+  ]
+}

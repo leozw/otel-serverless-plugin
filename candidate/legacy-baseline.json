@@ -1,0 +1,18 @@
+{
+  "baselineCommit": "a19df48b63dc738c5200bc907f9e8e523de62d72",
+  "note": "Immutable legacy paths: byte preservation is not a safety or support guarantee.",
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "049d0e005f64ba6fd24fe07ac7b3178814e8a50a456b6e3d838b4e3d7000c843"
+    },
+    {
+      "path": "index.js",
+      "sha256": "8ef4a8cabc2d98caa9c830e949f75c9ee24924c6a708134c242efd52d0b65cab"
+    },
+    {
+      "path": "package.json",
+      "sha256": "4f2fc12c1c71f2afc1de2912aa32435075f0580c11ac36c0f39546ff9eafa51e"
+    }
+  ]
+}
